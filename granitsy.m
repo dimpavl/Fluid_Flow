@@ -1,6 +1,6 @@
 function x = granitsy(i,j,dx,L,H, image)
       x = 0;
-      
+      %Белый 1, Черный 0
       %Лабиринт.
       x = image(i,j);
       return;
