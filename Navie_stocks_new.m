@@ -54,9 +54,9 @@ Nold(M, N) = 0;
 Nnew(M, N) = 0;
 K = 1/Prd;
 Nx = 1/(dx^2);
-Hr = 1;
+Hr = 1/Nx;
 %Для граничного условия на скорость
-l = 0
+l = 1;
 
 [X,Y] = MeshGrid(1:1:N,1:1:M);
 
@@ -121,8 +121,11 @@ end;
   
 time = 0;
 timek = 0;
-k = 0;
+iter = 0;
+iterk = 0;
+
 flagexit = 1;
+dt = 0;
 while (flagexit == 1)   
     if (time > timeend) flagexit = 0; end;
     if (flagexit == 0) continue; end;
@@ -141,15 +144,14 @@ while (flagexit == 1)
                     if (t > maxV) maxV = t; end;
                     if (m(i,j)>maxM) maxM = m(i,j); end;
                     if (Cold(i,j) > maxC) maxC = Cold(i,j); end;
-                    if (Pold(i,j) > maxP) maxP = Pold(i,j); end;
-                    if (Nold(i,j)> maxN) maxN = Nold(i,j); end;
+                    if (Pold(i,j) > maxP) maxP = Pold(i,j); end;                   
                end;               
            end;
         end;
     end;
     
     if (time <= timeend)
-        dt=0.1*min([dx/maxV, dx*dx/(nu)*0.1, dx^2/(1/Prd*maxC), dx^2/(K*maxN)]);
+        dt=0.1*min([dx/maxV, dx*dx/(nu)*0.1, dx/(maxC)]);
     end;    
     
     dt
@@ -185,13 +187,7 @@ while (flagexit == 1)
                                 (-0.5*(Vxold(i,j)+abs(Vxold(i,j))*(Cold(i,j)-Cold(i-1,j))/dx...
                                 -0.5*(Vxold(i,j)-abs(Vxold(i,j)))*(Cold(i+1,j)-Cold(i,j))/dx...
                                 -0.5*(Vyold(i,j)+abs(Vyold(i,j)))*(Cold(i,j)-Cold(i,j-1))/dx...
-                                -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Cold(i,j+1)-Cold(i,j))/dx));
-                    
-                    Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
-                                (-0.5*(Vxold(i,j)+abs(Vxold(i,j))*(Nold(i,j)-Nold(i-1,j))/dx...
-                                -0.5*(Vxold(i,j)-abs(Vxold(i,j)))*(Nold(i+1,j)-Nold(i,j))/dx...
-                                -0.5*(Vyold(i,j)+abs(Vyold(i,j)))*(Nold(i,j)-Nold(i,j-1))/dx...
-                                -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx));        
+                                -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Cold(i,j+1)-Cold(i,j))/dx));                                                   
                 end;                
             end;
         end;
@@ -202,8 +198,7 @@ while (flagexit == 1)
         if (time <= timeend)
             Vxnew(c,N) = Vxnew(c,N-1);
             Vynew(c,N) = Vynew(c,N-1); 
-            Cnew(c, N) = Cnew(c, N-1);
-            Nnew(c, N) = Nnew(c, N-1);
+            Cnew(c, N) = Cnew(c, N-1);            
         end;         
     end;
     
@@ -213,15 +208,23 @@ while (flagexit == 1)
                 if (time <= timeend) 
                     %Граница снизу
                     if (granitsy(i+1,j,dx,L,H,img) == 0)
-                        Cnew(i,j) = (-1/Prd*(Cnew(i+1,j)-Cnew(i-1,j))/(2*dx)-Hr*Nnew(i,j))/(-K*(1-Nnew(i,j)/Nx));
-                        Vxnew(i,j) = l*(Vxnew(i+1,j)-Vxnew(i-1,j))/(2*dx);
-                        %Vynew(i,j) = l*(Vynew(i+1,j)-Vynew(i-1,j))/(2*dx);
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                    (-Vxold(i,j)*(Nold(i,j)-Nold(i-1,j))/dx...                                    
+                                    -0.5*(Vyold(i,j)*(Nold(i,j)-Nold(i,j-1))/dx...
+                                    -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx));  
+                                
+                        Cnew(i,j) = (Cnew(i-1,j)+2*dx*Hr*Nnew(i,j)/(-1/Prd))/(1+K*2*dx/(-1/Prd)*(1-Nnew(i,j)/Nx));
+                        Vxnew(i,j) = Vxnew(i-1,j)/(2*dx/(l*(Nnew(i,j)/Nx))-1);                       
                     end;
                     %Граница сверху
                     if (granitsy(i-1,j,dx,L,H,img) == 0)
-                        Cnew(i,j) = (-1)*(-1/Prd*(Cnew(i+1,j)-Cnew(i-1,j))/(2*dx)-Hr*Nnew(i,j))/(-K*(1-Nnew(i,j)/Nx));
-                        Vxnew(i,j) = (-1)*l*(Vxnew(i+1,j)-Vxnew(i-1,j))/(2*dx);
-                        %Vynew(i,j) = (-1)*l*(Vynew(i+1,j)-Vynew(i-1,j))/(2*dx);
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                      (-Vxold(i,j)*(Nold(i+1,j)-Nold(i,j))/dx...
+                                     -0.5*(Vyold(i,j)+abs(Vyold(i,j)))*(Nold(i,j)-Nold(i,j-1))/dx...
+                                     -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx); 
+                                 
+                        Cnew(i,j) = (Cnew(i+1,j)-Hr*Nnew(i,j)*2*dx/((-1)*(-1/Prd)))/(1+(-K*2*dx/((-1)*(-1/Prd)))*(1-Nnew(i,j)/Nx));
+                        Vxnew(i,j) = Vxnew(i+1,j)/(1+2*dx/((-1)*l*(Nnew(i,j)/Nx)));                       
                     end;
                 end;
             end;
@@ -271,7 +274,7 @@ while (flagexit == 1)
  
       
     time = time + dt;    
-    k = k+1;    
+    iter = iter + 1;    
     if (time > timeend) flagexit = 0; end;
     
 % %     if ((time - timek) > 0.01)
@@ -289,8 +292,9 @@ while (flagexit == 1)
 % %     end;
     
     if (time <= timeend)
-    if ((time - timek) > 0.0001)
-        timek = time;       
+    if ((iter-iterk)>200)
+        timek = time;
+        iterk = iter;
         h = figure(1);   
         clf    
         subplot(2,2,1);
@@ -305,7 +309,7 @@ while (flagexit == 1)
         subplot(2,2,2)
         surf(X,Y,Vyold);
         shading interp
-        title(strcat('Vy iteration =  ', num2str(k)));
+        title(strcat('Vy iteration =  ', num2str(iter)));
         xlabel( strcat('H= ', num2str(H)) ); ylabel( strcat('L= ', num2str(L)) );
         shading flat
         view([0 90]);
