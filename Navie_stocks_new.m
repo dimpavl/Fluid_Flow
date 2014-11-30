@@ -21,11 +21,10 @@ Ce = 0.1;
 C0 = 1;
 
 
-
 m0 = 1;
-u = 1;% коэффициент влияния частиц
-P0 = 0.1;%давление на входе относительное
-gamma = 10^(floor(log10(P0)));
+u = 0.5;% коэффициент влияния частиц
+P0 = 0;%давление на входе относительное
+gamma = 10^(-4);
 
 %параметры сетки
 dx =10^(-2); 
@@ -68,6 +67,8 @@ fprintf(1,'alpha\n');
 alpha
 fprintf(1,'Prd пранкель диффузионный\n');
 Prd
+fprintf(1,'Re\n');
+Re
 fprintf(1,'Ce\n');
 Ce
 fprintf(1,'Начальная концентрация C0\n');
@@ -102,13 +103,18 @@ end;
 %Начальные условия
    for i = 1:1:M     
       if (granitsy(i,1,dx,L,H,img) == 1) 
+        Vyold(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
+        Vxold(i,1)=0;
+        Pold(i,1) = P0;
+        Cold(i,1) = C0; 
         Vynew(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
         Vxnew(i,1)=0;
         Pnew(i,1) = P0;
-        Cnew(i,1) = C0;        
+        Cnew(i,1) = C0; 
       end;
       if (granitsy(i,1,dx,L,H,img) == 1)
-        Pnew(i,N) = 0;       
+        Pold(i,N) = 0; 
+        Pnew(i,N) = 0;
       end;      
    end;
     
@@ -144,17 +150,18 @@ while (flagexit == 1)
                     if (t > maxV) maxV = t; end;
                     if (m(i,j)>maxM) maxM = m(i,j); end;
                     if (Cold(i,j) > maxC) maxC = Cold(i,j); end;
-                    if (Pold(i,j) > maxP) maxP = Pold(i,j); end;                   
+                    if (Pold(i,j) > maxP) maxP = Pold(i,j); end; 
+                    if (Nold(i,j)> maxN) maxN = Nold(i,j); end;
                end;               
            end;
         end;
     end;
     
     if (time <= timeend)
-        dt=0.1*min([dx/maxV, dx*dx/(nu)*0.1, dx/(maxC)]);
+        dt=0.1*min([dx/maxV, dx*dx/(nu)*0.1, dx^2/(1/Prd*maxC), dx/maxN]);
     end;    
     
-    dt
+    
     
     for i = 2:1:M-1 
         for j = 2:1:N-1  
@@ -193,47 +200,7 @@ while (flagexit == 1)
         end;
     end;
     
-%Граничные условия
-    for c = 1:1:M
-        if (time <= timeend)
-            Vxnew(c,N) = Vxnew(c,N-1);
-            Vynew(c,N) = Vynew(c,N-1); 
-            Cnew(c, N) = Cnew(c, N-1);            
-        end;         
-    end;
-    
-    for i = 2:1:M-1 
-        for j = 2:1:N-1  
-            if (granitsy(i,j,dx,L,H,img) == 1)
-                if (time <= timeend) 
-                    %Граница снизу
-                    if (granitsy(i+1,j,dx,L,H,img) == 0)
-                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
-                                    (-Vxold(i,j)*(Nold(i,j)-Nold(i-1,j))/dx...                                    
-                                    -0.5*(Vyold(i,j)*(Nold(i,j)-Nold(i,j-1))/dx...
-                                    -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx));  
-                                
-                        Cnew(i,j) = (Cnew(i-1,j)+2*dx*Hr*Nnew(i,j)/(-1/Prd))/(1+K*2*dx/(-1/Prd)*(1-Nnew(i,j)/Nx));
-                        Vxnew(i,j) = Vxnew(i-1,j)/(2*dx/(l*(Nnew(i,j)/Nx))-1);                       
-                    end;
-                    %Граница сверху
-                    if (granitsy(i-1,j,dx,L,H,img) == 0)
-                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
-                                      (-Vxold(i,j)*(Nold(i+1,j)-Nold(i,j))/dx...
-                                     -0.5*(Vyold(i,j)+abs(Vyold(i,j)))*(Nold(i,j)-Nold(i,j-1))/dx...
-                                     -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx); 
-                                 
-                        Cnew(i,j) = (Cnew(i+1,j)-Hr*Nnew(i,j)*2*dx/((-1)*(-1/Prd)))/(1+(-K*2*dx/((-1)*(-1/Prd)))*(1-Nnew(i,j)/Nx));
-                        Vxnew(i,j) = Vxnew(i+1,j)/(1+2*dx/((-1)*l*(Nnew(i,j)/Nx)));                       
-                    end;
-                end;
-            end;
-        end;
-    end;
-    
-    
-    
-%calculating pressure and velocitycorrection
+    %calculating pressure and velocitycorrection
     for nIter = 1:1:2
         for i = 2:1:M-1
             for j = 2:1:N-1
@@ -257,6 +224,78 @@ while (flagexit == 1)
             end;
         end;
     end;
+    
+    
+%Граничные условия
+    for c = 1:1:M
+        if (time <= timeend)
+            Vxnew(c,N) = Vxnew(c,N-1);
+            Vynew(c,N) = Vynew(c,N-1); 
+            %Cnew(c, N) = Cnew(c, N-1); 
+            Cnew(c,N) = 0;
+        end;         
+    end;
+    
+    for i = 2:1:M-1 
+        for j = 2:1:N-1  
+            if (granitsy(i,j,dx,L,H,img) == 1)
+                if (time <= timeend) 
+                    %Граница снизу
+                    if (granitsy(i+1,j,dx,L,H,img) == 0)
+%                         Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+%                                     (-Vxold(i,j)*(Nold(i,j)-Nold(i-1,j))/dx...                                    
+%                                     -0.5*(Vyold(i,j)*(Nold(i,j)-Nold(i,j-1))/dx...
+%                                     -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx)); 
+
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                    (-Vxold(i,j)*(Nold(i,j)-Nold(i-1,j))/dx...                                    
+                                    -Vyold(i,j)*(Nold(i,j+1)-Nold(i,j-1))/(2*dx));        
+                        Cnew(i,j) = (Cnew(i-1,j)+dx*Hr*Nnew(i,j)/(-1/Prd))/(1+K*dx/(-1/Prd)*(1-Nnew(i,j)/Nx));
+                        Vynew(i,j) = Vynew(i-1,j)/(1-dx/(l));
+                        Vxnew(i,j) = 0;
+                    end;
+                    %Граница сверху
+                    if (granitsy(i-1,j,dx,L,H,img) == 0)
+%                         Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+%                                       (-Vxold(i,j)*(Nold(i+1,j)-Nold(i,j))/dx...
+%                                      -0.5*(Vyold(i,j)+abs(Vyold(i,j)))*(Nold(i,j)-Nold(i,j-1))/dx...
+%                                      -0.5*(Vyold(i,j)-abs(Vyold(i,j)))*(Nold(i,j+1)-Nold(i,j))/dx); 
+
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                      (-Vxold(i,j)*(Nold(i+1,j)-Nold(i,j))/dx...
+                                     -Vyold(i,j)*(Nold(i,j+1)-Nold(i,j-1))/(2*dx));          
+                        Cnew(i,j) = (Cnew(i+1,j)-Hr*Nnew(i,j)*dx/((-1)*(-1/Prd)))/(1+(-K*dx/((-1)*(-1/Prd)))*(1-Nnew(i,j)/Nx));
+                        Vynew(i,j) = Vynew(i+1,j)/(1+dx/((-1)*l));
+                        Vxnew(i,j) = 0;
+                    end;
+                    
+                    %Граница слева
+                    if (granitsy(i,j-1,dx,L,H,img) == 0)                      
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                    (-Vxold(i,j)*(Nold(i+1,j)-Nold(i-1,j))/(2*dx)...                                                                       
+                                    -Vyold(i,j)*(Nold(i,j+1)-Nold(i,j))/dx);       
+                        Cnew(i,j) = (Cnew(i,j+1)-dx*Hr*Nnew(i,j)/(-1/Prd))/(1+K*(-1)*dx/(-1/Prd)*(1-Nnew(i,j)/Nx));
+                        Vynew(i,j) = Vynew(i,j+1)/(1+dx/(l));
+                        Vxnew(i,j) = 0;
+                    end;
+                    
+                    %Граница справа
+                    if (granitsy(i,j+1,dx,L,H,img) == 0)
+                        Nnew(i,j) = K*dt*(1-Nold(i,j)/Nx)*Cold(i,j)-dt*Hr*Nold(i,j)+Nold(i,j)+dt*...
+                                (-Vxold(i,j)*(Nold(i+1,j)-Nold(i-1,j))/(2*dx)...                                                                
+                                -Vyold(i,j)*(Nold(i,j)-Nold(i,j-1))/dx);          
+                        Cnew(i,j) = (Cnew(i,j-1)+Hr*Nnew(i,j)*dx/((-1)*(-1/Prd)))/(1+(K*dx/((-1)*(-1/Prd)))*(1-Nnew(i,j)/Nx));
+                        Vynew(i,j) = Vynew(i,j-1)/(1-dx/((-1)*l));
+                        Vxnew(i,j) = 0;
+                    end;
+                end;
+            end;
+        end;
+    end;
+    
+    
+    
+
    
     
     
@@ -295,6 +334,7 @@ while (flagexit == 1)
     if ((iter-iterk)>200)
         timek = time;
         iterk = iter;
+        dt
         h = figure(1);   
         clf    
         subplot(2,2,1);
