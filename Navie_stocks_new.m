@@ -55,7 +55,7 @@ K = 1/Prd;
 Nx = 1/(dx^2);
 Hr = 1/Nx;
 %Для граничного условия на скорость
-l = 1;
+l = 10^(-3);
 
 [X,Y] = MeshGrid(1:1:N,1:1:M);
 
@@ -103,11 +103,13 @@ end;
 %Начальные условия
    for i = 1:1:M     
       if (granitsy(i,1,dx,L,H,img) == 1) 
-        Vyold(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
+        %Vyold(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
+        Vyold(i,1) = 0.1;
         Vxold(i,1)=0;
         Pold(i,1) = P0;
         Cold(i,1) = C0; 
-        Vynew(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
+        %Vynew(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
+        Vynew(i,1) = 0.1;
         Vxnew(i,1)=0;
         Pnew(i,1) = P0;
         Cnew(i,1) = C0; 
@@ -335,7 +337,7 @@ while (flagexit == 1)
         timek = time;
         iterk = iter;
         dt
-        h = figure(1);   
+        h = figure(3);   
         clf    
         subplot(2,2,1);
         surf(X,Y,Vxold);
@@ -374,7 +376,7 @@ while (flagexit == 1)
         view([0 90]);
         colorbar
         
-        h = figure(2);   
+        h = figure(4);   
         clf            
         surf(X,Y,Nold);
         title(strcat('N time =  ', num2str(time)));
