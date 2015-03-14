@@ -32,7 +32,7 @@ H = 1; L = 0.4;
 A = 10^(3);
 
 % Временной отрезок
-timeend = 7.1;
+timeend = 10.0;
 
 
 N = floor(H/dx);%Продольный размер
@@ -53,9 +53,14 @@ Nold(M, N) = 0;
 Nnew(M, N) = 0;
 K = 1/Prd;
 Nx = 1/(dx^2);
-Hr = 1/Nx;
+%Hr = 1/Nx;
+Hr = 1;
+
+%Для классического случая
+%K = 10^(-9);
+%Hr = 10^(-9);
 %Для граничного условия на скорость
-l = 10^(-3);
+l = 10^(-4);
 
 [X,Y] = MeshGrid(1:1:N,1:1:M);
 
@@ -104,12 +109,12 @@ end;
    for i = 1:1:M     
       if (granitsy(i,1,dx,L,H,img) == 1) 
         %Vyold(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
-        Vyold(i,1) = 0.1;
+        Vyold(i,1) = 0.01;
         Vxold(i,1)=0;
         Pold(i,1) = P0;
         Cold(i,1) = C0; 
         %Vynew(i,1) = A*((i-1)*dx)^(2)*(L-(i)*dx)^(2);
-        Vynew(i,1) = 0.1;
+        Vynew(i,1) = 0.01;
         Vxnew(i,1)=0;
         Pnew(i,1) = P0;
         Cnew(i,1) = C0; 
@@ -337,7 +342,7 @@ while (flagexit == 1)
         timek = time;
         iterk = iter;
         dt
-        h = figure(3);   
+        h = figure(1);   
         clf    
         subplot(2,2,1);
         surf(X,Y,Vxold);
@@ -376,7 +381,7 @@ while (flagexit == 1)
         view([0 90]);
         colorbar
         
-        h = figure(4);   
+        h = figure(2);   
         clf            
         surf(X,Y,Nold);
         title(strcat('N time =  ', num2str(time)));
