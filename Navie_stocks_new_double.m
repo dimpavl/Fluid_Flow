@@ -20,10 +20,10 @@ alpha = 1;
 alpha1 = 0;
 
 Ce = 0.1;
-C0 = 1;
+C0 = 5;
 
 Ce1 = 0.1;
-C01 = 1;
+C01 = 5;
 
 
 m0 = 1;
@@ -276,7 +276,7 @@ while (flagexit == 1)
                                 +1/Re*m1(i,j)/p*dt1/(dx)^2*(Vyold1(i+1,j)+Vyold1(i-1,j)+Vyold1(i,j+1)+Vyold1(i,j-1)-4*Vyold1(i,j))...
                                 -1/Re*dt1*P/(M0*V/R)*(Pold1(i,j+1)-Pold1(i,j-1))/(2*dx)...
                                 +1/Re*dt1*(m1(i+1,j)-m1(i-1,j))/(2*dx)*(Vyold1(i+1,j)-Vyold1(i-1,j)+Vxold1(i,j+1)-Vxold1(i,j-1))/(2*dx)...
-                                +1/Re*2*dt*(m1(i,j+1)-m1(i,j-1))/(2*dx)*(Vyold1(i,j+1)-Vyold1(i,j-1))/(2*dx)...
+                                +1/Re*2*dt1*(m1(i,j+1)-m1(i,j-1))/(2*dx)*(Vyold1(i,j+1)-Vyold1(i,j-1))/(2*dx)...
                                 +Vyold1(i,j);
                 
                     Pnew1(i,j) = -gamma1*dt1/(2*dx)*(Vxold1(i+1,j)-Vxold1(i-1,j)+Vyold1(i,j+1)-Vyold1(i,j-1))+Pold1(i,j);
@@ -318,8 +318,8 @@ while (flagexit == 1)
                     end;
                     
                     if (time1 <= timeend)
-                        Vxnew1(i,j) = Vxnew1(i,j)-1/Re*dt*P/(M0*V/R)*(DeltaP1(i+1,j)-DeltaP1(i-1,j))/(2*dx);
-                        Vynew1(i,j) = Vynew1(i,j)-1/Re*dt*P/(M0*V/R)*(DeltaP1(i,j+1)-DeltaP1(i,j-1))/(2*dx);
+                        Vxnew1(i,j) = Vxnew1(i,j)-1/Re*dt1*P/(M0*V/R)*(DeltaP1(i+1,j)-DeltaP1(i-1,j))/(2*dx);
+                        Vynew1(i,j) = Vynew1(i,j)-1/Re*dt1*P/(M0*V/R)*(DeltaP1(i,j+1)-DeltaP1(i,j-1))/(2*dx);
                     end;
                 end;
             end;
@@ -551,7 +551,7 @@ while (flagexit == 1)
 %Общий график
     if (time <= timeend && time1 <= timeend)
         if ((iter-iterk)>200 || (iter1-iterk1)>200)
-            h = figure(7);
+            h = figure(15);
             for t = 1:1:N                
                 bottoml(t) = l(2,t);
                 topl(t) = l(M-1,t);
