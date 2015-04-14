@@ -20,10 +20,10 @@ alpha = 1;
 alpha1 = 0;
 
 Ce = 0.1;
-C0 = 5;
+C0 = 1;
 
 Ce1 = 0.1;
-C01 = 5;
+C01 = 1;
 
 
 m0 = 1;
@@ -551,13 +551,42 @@ while (flagexit == 1)
 %Общий график
     if (time <= timeend && time1 <= timeend)
         if ((iter-iterk)>200 || (iter1-iterk1)>200)
-            h = figure(15);
+            h = figure(7);
             for t = 1:1:N                
                 bottoml(t) = l(2,t);
                 topl(t) = l(M-1,t);
                 
                 bottoml1(t) = l1(2,t);
                 topl1(t) = l1(M-1,t);
+            end;
+            %Корректировка графиков
+            for t=2:2:N-1
+                if (bottoml(t-1) <= bottoml(t) && bottoml(t)>= bottoml(t+1))
+                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
+                end;
+                if (bottoml(t) <= bottoml(t-1) && bottoml(t)<= bottoml(t+1))
+                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
+                end;
+                
+                if (bottoml1(t-1) <= bottoml1(t) && bottoml1(t)>= bottoml1(t+1))
+                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
+                end;
+                if (bottoml1(t) <= bottoml1(t-1) && bottoml1(t)<= bottoml1(t+1))
+                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
+                end;
+                
+                if (topl(t-1) <= topl(t) && topl(t)>= topl(t+1))
+                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
+                end;
+                if (topl(t) <= topl(t-1) && topl(t)<= topl(t+1))
+                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
+                end;
+                if (topl1(t-1) <= topl1(t) && topl1(t)>= topl1(t+1))
+                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
+                end;
+                if (topl1(t) <= topl1(t-1) && topl1(t)<= topl1(t+1))
+                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
+                end;
             end;
             t = 1:1:N;               
             clf    
@@ -575,6 +604,37 @@ while (flagexit == 1)
                 bottomN1(t) = Nold1(2,t);
                 topN1(t) = Nold1(M-1,t);                
             end;
+            
+            %Корректировка графиков
+            for t=2:2:N-1
+                if (bottomN(t-1) <= bottomN(t) && bottomN(t)>= bottomN(t+1))
+                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
+                end;
+                if (bottomN(t) <= bottomN(t-1) && bottomN(t)<= bottomN(t+1))
+                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
+                end;
+                
+                if (bottomN1(t-1) <= bottomN1(t) && bottomN1(t)>= bottomN1(t+1))
+                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
+                end;
+                if (bottomN1(t) <= bottomN1(t-1) && bottomN1(t)<= bottomN1(t+1))
+                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
+                end;
+                
+                if (topN(t-1) <= topN(t) && topN(t)>= topN(t+1))
+                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
+                end;
+                if (topN(t) <= topN(t-1) && topN(t)<= topN(t+1))
+                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
+                end;
+                if (topN1(t-1) <= topN1(t) && topN1(t)>= topN1(t+1))
+                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
+                end;
+                if (topN1(t) <= topN1(t-1) && topN1(t)<= topN1(t+1))
+                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
+                end;
+            end;
+            
             t = 1:1:N;               
             clf    
             plot(t, bottomN,'b-', t, bottomN1,'b--', t, topN,'r-', t, topN1, 'r--');
@@ -644,6 +704,22 @@ while (flagexit == 1)
             bottomN(t) = Nold(2,t);
             topN(t) = Nold(M-1,t);
         end;
+        %Корректировка графиков
+            for t=2:2:N-1
+                if (bottomN(t-1) <= bottomN(t) && bottomN(t)>= bottomN(t+1))
+                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
+                end;
+                if (bottomN(t) <= bottomN(t-1) && bottomN(t)<= bottomN(t+1))
+                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
+                end;                               
+                
+                if (topN(t-1) <= topN(t) && topN(t)>= topN(t+1))
+                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
+                end;
+                if (topN(t) <= topN(t-1) && topN(t)<= topN(t+1))
+                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
+                end;               
+            end;
         t = 1:1:N;               
         clf    
         plot(t, bottomN,'b', t, topN,'r');
@@ -667,6 +743,22 @@ while (flagexit == 1)
             bottoml(t) = l(2,t);
             topl(t) = l(M-1,t);
         end;
+        %Корректировка графиков
+            for t=2:2:N-1
+                if (bottoml(t-1) <= bottoml(t) && bottoml(t)>= bottoml(t+1))
+                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
+                end;
+                if (bottoml(t) <= bottoml(t-1) && bottoml(t)<= bottoml(t+1))
+                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
+                end;
+                                                
+                if (topl(t-1) <= topl(t) && topl(t)>= topl(t+1))
+                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
+                end;
+                if (topl(t) <= topl(t-1) && topl(t)<= topl(t+1))
+                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
+                end;                
+            end;
         t = 1:1:N;               
         clf    
         plot(t, bottoml,'b', t, topl,'r');
@@ -737,6 +829,22 @@ while (flagexit == 1)
             bottomN1(t) = Nold1(2,t);
             topN1(t) = Nold1(M-1,t);
         end;
+        %Корректировка графиков
+            for t=2:2:N-1                                
+                if (bottomN1(t-1) <= bottomN1(t) && bottomN1(t)>= bottomN1(t+1))
+                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
+                end;
+                if (bottomN1(t) <= bottomN1(t-1) && bottomN1(t)<= bottomN1(t+1))
+                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
+                end;
+                
+                if (topN1(t-1) <= topN1(t) && topN1(t)>= topN1(t+1))
+                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
+                end;
+                if (topN1(t) <= topN1(t-1) && topN1(t)<= topN1(t+1))
+                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
+                end;
+            end;
         t = 1:1:N;               
         clf    
         plot(t, bottomN1,'b', t, topN1,'r');
@@ -760,6 +868,22 @@ while (flagexit == 1)
             bottoml1(t) = l1(2,t);
             topl1(t) = l1(M-1,t);
         end;
+        %Корректировка графиков
+            for t=2:2:N-1                                
+                if (bottoml1(t-1) <= bottoml1(t) && bottoml1(t)>= bottoml1(t+1))
+                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
+                end;
+                if (bottoml1(t) <= bottoml1(t-1) && bottoml1(t)<= bottoml1(t+1))
+                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
+                end;
+                               
+                if (topl1(t-1) <= topl1(t) && topl1(t)>= topl1(t+1))
+                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
+                end;
+                if (topl1(t) <= topl1(t-1) && topl1(t)<= topl1(t+1))
+                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
+                end;
+            end;        
         t = 1:1:N;               
         clf    
         plot(t, bottoml1,'b', t, topl1,'r');
