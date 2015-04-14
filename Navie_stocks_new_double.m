@@ -14,6 +14,8 @@ Re = R*V/nu;%число Рейнольдса
 Prd = R*V/D;%Пранкель диффузионный
 P = 10^6; % характерное давление 1 атмосфера
 T = R/V; %масштаб по времени
+%Степень аппроксимирующего полинома
+pow = 20;
 %Параметры для уравнения концентрации жидкости
 alpha = 1;
 
@@ -558,39 +560,22 @@ while (flagexit == 1)
                 
                 bottoml1(t) = l1(2,t);
                 topl1(t) = l1(M-1,t);
-            end;
-            %Корректировка графиков
-            for t=2:2:N-1
-                if (bottoml(t-1) <= bottoml(t) && bottoml(t)>= bottoml(t+1))
-                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
-                end;
-                if (bottoml(t) <= bottoml(t-1) && bottoml(t)<= bottoml(t+1))
-                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
-                end;
-                
-                if (bottoml1(t-1) <= bottoml1(t) && bottoml1(t)>= bottoml1(t+1))
-                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
-                end;
-                if (bottoml1(t) <= bottoml1(t-1) && bottoml1(t)<= bottoml1(t+1))
-                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
-                end;
-                
-                if (topl(t-1) <= topl(t) && topl(t)>= topl(t+1))
-                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
-                end;
-                if (topl(t) <= topl(t-1) && topl(t)<= topl(t+1))
-                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
-                end;
-                if (topl1(t-1) <= topl1(t) && topl1(t)>= topl1(t+1))
-                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
-                end;
-                if (topl1(t) <= topl1(t-1) && topl1(t)<= topl1(t+1))
-                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
-                end;
-            end;
-            t = 1:1:N;               
+            end;            
+            
+            t = 1:1:N;
+            
+            pbottoml = polyfit(t, bottoml, pow);
+            ptopl = polyfit(t, topl, pow);
+            pbottoml1 = polyfit(t, bottoml1, pow);
+            ptopl1 = polyfit(t, topl1, pow);
+            
+            pbottoml = polyval(pbottoml, t);
+            ptopl = polyval(ptopl, t);
+            pbottoml1 = polyval(pbottoml1, t);
+            ptopl1 = polyval(ptopl1, t);
+            
             clf    
-            plot(t, bottoml,'b-', t, bottoml1,'b--', t, topl,'r-', t, topl1, 'r--');
+            plot(t, pbottoml,'b-', t, pbottoml1,'b--', t, ptopl,'r-', t, ptopl1, 'r--');
             grid on;
             title('l-bottom = blue, l-top=red');
             xlabel('H');
@@ -603,41 +588,21 @@ while (flagexit == 1)
                 
                 bottomN1(t) = Nold1(2,t);
                 topN1(t) = Nold1(M-1,t);                
-            end;
+            end;                                    
+            t = 1:1:N;
             
-            %Корректировка графиков
-            for t=2:2:N-1
-                if (bottomN(t-1) <= bottomN(t) && bottomN(t)>= bottomN(t+1))
-                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
-                end;
-                if (bottomN(t) <= bottomN(t-1) && bottomN(t)<= bottomN(t+1))
-                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
-                end;
-                
-                if (bottomN1(t-1) <= bottomN1(t) && bottomN1(t)>= bottomN1(t+1))
-                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
-                end;
-                if (bottomN1(t) <= bottomN1(t-1) && bottomN1(t)<= bottomN1(t+1))
-                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
-                end;
-                
-                if (topN(t-1) <= topN(t) && topN(t)>= topN(t+1))
-                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
-                end;
-                if (topN(t) <= topN(t-1) && topN(t)<= topN(t+1))
-                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
-                end;
-                if (topN1(t-1) <= topN1(t) && topN1(t)>= topN1(t+1))
-                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
-                end;
-                if (topN1(t) <= topN1(t-1) && topN1(t)<= topN1(t+1))
-                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
-                end;
-            end;
+            pbottomN = polyfit(t, bottomN, pow);
+            ptopN = polyfit(t, topN, pow);
+            pbottomN1 = polyfit(t, bottomN1, pow);
+            ptopN1 = polyfit(t, topN1, pow);
             
-            t = 1:1:N;               
+            pbottomN = polyval(pbottomN, t);
+            ptopN = polyval(ptopN, t);
+            pbottomN1 = polyval(pbottomN1, t);
+            ptopN1 = polyval(ptopN1, t);
+            
             clf    
-            plot(t, bottomN,'b-', t, bottomN1,'b--', t, topN,'r-', t, topN1, 'r--');
+            plot(t, pbottomN,'b-', t, pbottomN1,'b--', t, ptopN,'r-', t, ptopN1, 'r--');
             grid on;
             title('N-bottom = blue, N-top=red');
             xlabel('H');
@@ -703,26 +668,17 @@ while (flagexit == 1)
         for t = 1:1:N
             bottomN(t) = Nold(2,t);
             topN(t) = Nold(M-1,t);
-        end;
-        %Корректировка графиков
-            for t=2:2:N-1
-                if (bottomN(t-1) <= bottomN(t) && bottomN(t)>= bottomN(t+1))
-                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
-                end;
-                if (bottomN(t) <= bottomN(t-1) && bottomN(t)<= bottomN(t+1))
-                    bottomN(t) = (bottomN(t-1)+bottomN(t+1))/2;                    
-                end;                               
-                
-                if (topN(t-1) <= topN(t) && topN(t)>= topN(t+1))
-                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
-                end;
-                if (topN(t) <= topN(t-1) && topN(t)<= topN(t+1))
-                    topN(t) = (topN(t-1)+topN(t+1))/2;                    
-                end;               
-            end;
-        t = 1:1:N;               
+        end;        
+        t = 1:1:N;
+            
+        pbottomN = polyfit(t, bottomN, pow);
+        ptopN = polyfit(t, topN, pow);        
+            
+        pbottomN = polyval(pbottomN, t);
+        ptopN = polyval(ptopN, t);
+        
         clf    
-        plot(t, bottomN,'b', t, topN,'r');
+        plot(t, pbottomN,'b', t, ptopN,'r');
         grid on;
         title('N-bottom=blue, N-top=red');
         xlabel('H'); 
@@ -743,25 +699,16 @@ while (flagexit == 1)
             bottoml(t) = l(2,t);
             topl(t) = l(M-1,t);
         end;
-        %Корректировка графиков
-            for t=2:2:N-1
-                if (bottoml(t-1) <= bottoml(t) && bottoml(t)>= bottoml(t+1))
-                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
-                end;
-                if (bottoml(t) <= bottoml(t-1) && bottoml(t)<= bottoml(t+1))
-                    bottoml(t) = (bottoml(t-1)+bottoml(t+1))/2;                    
-                end;
-                                                
-                if (topl(t-1) <= topl(t) && topl(t)>= topl(t+1))
-                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
-                end;
-                if (topl(t) <= topl(t-1) && topl(t)<= topl(t+1))
-                    topl(t) = (topl(t-1)+topl(t+1))/2;                    
-                end;                
-            end;
-        t = 1:1:N;               
+        t = 1:1:N;
+        
+        pbottoml = polyfit(t, bottoml, pow);
+        ptopl = polyfit(t, topl, pow);
+                    
+        pbottoml = polyval(pbottoml, t);
+        ptopl = polyval(ptopl, t);       
+        
         clf    
-        plot(t, bottoml,'b', t, topl,'r');
+        plot(t, pbottoml,'b', t, ptopl,'r');
         grid on;
         title('l-top = red, l-bottom = blue');
         xlabel('H'); 
@@ -828,26 +775,17 @@ while (flagexit == 1)
         for t = 1:1:N
             bottomN1(t) = Nold1(2,t);
             topN1(t) = Nold1(M-1,t);
-        end;
-        %Корректировка графиков
-            for t=2:2:N-1                                
-                if (bottomN1(t-1) <= bottomN1(t) && bottomN1(t)>= bottomN1(t+1))
-                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
-                end;
-                if (bottomN1(t) <= bottomN1(t-1) && bottomN1(t)<= bottomN1(t+1))
-                    bottomN1(t) = (bottomN1(t-1)+bottomN1(t+1))/2;                    
-                end;
-                
-                if (topN1(t-1) <= topN1(t) && topN1(t)>= topN1(t+1))
-                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
-                end;
-                if (topN1(t) <= topN1(t-1) && topN1(t)<= topN1(t+1))
-                    topN1(t) = (topN1(t-1)+topN1(t+1))/2;                    
-                end;
-            end;
+        end;        
         t = 1:1:N;               
+               
+        pbottomN1 = polyfit(t, bottomN1, pow);
+        ptopN1 = polyfit(t, topN1, pow);
+                          
+        pbottomN1 = polyval(pbottomN1, t);
+        ptopN1 = polyval(ptopN1, t);
+        
         clf    
-        plot(t, bottomN1,'b', t, topN1,'r');
+        plot(t, pbottomN1,'b', t, ptopN1,'r');
         grid on;
         title('N-top = r, N-bottom = b');
         xlabel('H'); 
@@ -868,25 +806,16 @@ while (flagexit == 1)
             bottoml1(t) = l1(2,t);
             topl1(t) = l1(M-1,t);
         end;
-        %Корректировка графиков
-            for t=2:2:N-1                                
-                if (bottoml1(t-1) <= bottoml1(t) && bottoml1(t)>= bottoml1(t+1))
-                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
-                end;
-                if (bottoml1(t) <= bottoml1(t-1) && bottoml1(t)<= bottoml1(t+1))
-                    bottoml1(t) = (bottoml1(t-1)+bottoml1(t+1))/2;                    
-                end;
-                               
-                if (topl1(t-1) <= topl1(t) && topl1(t)>= topl1(t+1))
-                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
-                end;
-                if (topl1(t) <= topl1(t-1) && topl1(t)<= topl1(t+1))
-                    topl1(t) = (topl1(t-1)+topl1(t+1))/2;                    
-                end;
-            end;        
         t = 1:1:N;               
+               
+        pbottoml1 = polyfit(t, bottoml1, pow);
+        ptopl1 = polyfit(t, topl1, pow);
+                            
+        pbottoml1 = polyval(pbottoml1, t);
+        ptopl1 = polyval(ptopl1, t);
+            
         clf    
-        plot(t, bottoml1,'b', t, topl1,'r');
+        plot(t, pbottoml1,'b', t, ptopl1,'r');
         grid on;
         title('l-top = red, l-bottom=blue');
         xlabel('H'); 
