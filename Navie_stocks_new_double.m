@@ -554,55 +554,55 @@ while (flagexit == 1)
     if (time <= timeend && time1 <= timeend)
         if ((iter-iterk)>200 || (iter1-iterk1)>200)
             h = figure(7);
-            for t = 1:1:N                
-                bottoml(t) = l(2,t);
-                topl(t) = l(M-1,t);
+            for ind = 1:1:N                
+                bottoml(ind) = l(2,ind);
+                topl(ind) = l(M-1,ind);
                 
-                bottoml1(t) = l1(2,t);
-                topl1(t) = l1(M-1,t);
+                bottoml1(ind) = l1(2,ind);
+                topl1(ind) = l1(M-1,ind);
             end;            
             
-            t = 1:1:N;
+            ind = 1:1:N;
             
-            pbottoml = polyfit(t, bottoml, pow);
-            ptopl = polyfit(t, topl, pow);
-            pbottoml1 = polyfit(t, bottoml1, pow);
-            ptopl1 = polyfit(t, topl1, pow);
+            pbottoml = polyfit(ind, bottoml, pow);
+            ptopl = polyfit(ind, topl, pow);
+            pbottoml1 = polyfit(ind, bottoml1, pow);
+            ptopl1 = polyfit(ind, topl1, pow);
             
-            pbottoml = polyval(pbottoml, t);
-            ptopl = polyval(ptopl, t);
-            pbottoml1 = polyval(pbottoml1, t);
-            ptopl1 = polyval(ptopl1, t);
+            pbottoml = polyval(pbottoml, ind);
+            ptopl = polyval(ptopl, ind);
+            pbottoml1 = polyval(pbottoml1, ind);
+            ptopl1 = polyval(ptopl1, ind);
             
             clf    
-            plot(t, pbottoml,'b-', t, pbottoml1,'b--', t, ptopl,'r-', t, ptopl1, 'r--');
+            plot(ind, pbottoml,'b-', ind, pbottoml1,'b--', ind, ptopl,'r-', ind, ptopl1, 'r--');
             grid on;
             title('l-bottom = blue, l-top=red');
             xlabel('H');
             ylabel('l');
             
             h = figure(8);
-            for t = 1:1:N
-                bottomN(t) = Nold(2,t);
-                topN(t) = Nold(M-1,t);
+            for ind = 1:1:N
+                bottomN(ind) = Nold(2,ind);
+                topN(ind) = Nold(M-1,ind);
                 
-                bottomN1(t) = Nold1(2,t);
-                topN1(t) = Nold1(M-1,t);                
+                bottomN1(ind) = Nold1(2,ind);
+                topN1(ind) = Nold1(M-1,ind);                
             end;                                    
-            t = 1:1:N;
+            ind = 1:1:N;
             
-            pbottomN = polyfit(t, bottomN, pow);
-            ptopN = polyfit(t, topN, pow);
-            pbottomN1 = polyfit(t, bottomN1, pow);
-            ptopN1 = polyfit(t, topN1, pow);
+            pbottomN = polyfit(ind, bottomN, pow);
+            ptopN = polyfit(ind, topN, pow);
+            pbottomN1 = polyfit(ind, bottomN1, pow);
+            ptopN1 = polyfit(ind, topN1, pow);
             
-            pbottomN = polyval(pbottomN, t);
-            ptopN = polyval(ptopN, t);
-            pbottomN1 = polyval(pbottomN1, t);
-            ptopN1 = polyval(ptopN1, t);
+            pbottomN = polyval(pbottomN, ind);
+            ptopN = polyval(ptopN, ind);
+            pbottomN1 = polyval(pbottomN1, ind);
+            ptopN1 = polyval(ptopN1, ind);
             
             clf    
-            plot(t, pbottomN,'b-', t, pbottomN1,'b--', t, ptopN,'r-', t, ptopN1, 'r--');
+            plot(ind, pbottomN,'b-', ind, pbottomN1,'b--', ind, ptopN,'r-', ind, ptopN1, 'r--');
             grid on;
             title('N-bottom = blue, N-top=red');
             xlabel('H');
@@ -665,20 +665,20 @@ while (flagexit == 1)
 %         colorbar
          
         h = figure(2);
-        for t = 1:1:N
-            bottomN(t) = Nold(2,t);
-            topN(t) = Nold(M-1,t);
+        for ind = 1:1:N
+            bottomN(ind) = Nold(2,ind);
+            topN(ind) = Nold(M-1,ind);
         end;        
-        t = 1:1:N;
+        ind = 1:1:N;
             
-        pbottomN = polyfit(t, bottomN, pow);
-        ptopN = polyfit(t, topN, pow);        
+        pbottomN = polyfit(ind, bottomN, pow);
+        ptopN = polyfit(ind, topN, pow);        
             
-        pbottomN = polyval(pbottomN, t);
-        ptopN = polyval(ptopN, t);
+        pbottomN = polyval(pbottomN, ind);
+        ptopN = polyval(ptopN, ind);
         
         clf    
-        plot(t, pbottomN,'b', t, ptopN,'r');
+        plot(ind, pbottomN,'b', ind, ptopN,'r');
         grid on;
         title('N-bottom=blue, N-top=red');
         xlabel('H'); 
@@ -695,20 +695,20 @@ while (flagexit == 1)
 %         colorbar
 
         h = figure(3);
-        for t = 1:1:N
-            bottoml(t) = l(2,t);
-            topl(t) = l(M-1,t);
+        for ind = 1:1:N
+            bottoml(ind) = l(2,ind);
+            topl(ind) = l(M-1,ind);
         end;
-        t = 1:1:N;
+        ind = 1:1:N;
         
-        pbottoml = polyfit(t, bottoml, pow);
-        ptopl = polyfit(t, topl, pow);
+        pbottoml = polyfit(ind, bottoml, pow);
+        ptopl = polyfit(ind, topl, pow);
                     
-        pbottoml = polyval(pbottoml, t);
-        ptopl = polyval(ptopl, t);       
+        pbottoml = polyval(pbottoml, ind);
+        ptopl = polyval(ptopl, ind);       
         
         clf    
-        plot(t, pbottoml,'b', t, ptopl,'r');
+        plot(ind, pbottoml,'b', ind, ptopl,'r');
         grid on;
         title('l-top = red, l-bottom = blue');
         xlabel('H'); 
@@ -772,20 +772,20 @@ while (flagexit == 1)
 %         colorbar
          
         h = figure(5);
-        for t = 1:1:N
-            bottomN1(t) = Nold1(2,t);
-            topN1(t) = Nold1(M-1,t);
+        for ind = 1:1:N
+            bottomN1(ind) = Nold1(2,ind);
+            topN1(ind) = Nold1(M-1,ind);
         end;        
-        t = 1:1:N;               
+        ind = 1:1:N;               
                
-        pbottomN1 = polyfit(t, bottomN1, pow);
-        ptopN1 = polyfit(t, topN1, pow);
+        pbottomN1 = polyfit(ind, bottomN1, pow);
+        ptopN1 = polyfit(ind, topN1, pow);
                           
-        pbottomN1 = polyval(pbottomN1, t);
-        ptopN1 = polyval(ptopN1, t);
+        pbottomN1 = polyval(pbottomN1, ind);
+        ptopN1 = polyval(ptopN1, ind);
         
         clf    
-        plot(t, pbottomN1,'b', t, ptopN1,'r');
+        plot(ind, pbottomN1,'b', ind, ptopN1,'r');
         grid on;
         title('N-top = r, N-bottom = b');
         xlabel('H'); 
@@ -802,20 +802,20 @@ while (flagexit == 1)
 %         colorbar
 
         h = figure(6);
-        for t = 1:1:N
-            bottoml1(t) = l1(2,t);
-            topl1(t) = l1(M-1,t);
+        for ind = 1:1:N
+            bottoml1(ind) = l1(2,ind);
+            topl1(ind) = l1(M-1,ind);
         end;
-        t = 1:1:N;               
+        ind = 1:1:N;               
                
-        pbottoml1 = polyfit(t, bottoml1, pow);
-        ptopl1 = polyfit(t, topl1, pow);
+        pbottoml1 = polyfit(ind, bottoml1, pow);
+        ptopl1 = polyfit(ind, topl1, pow);
                             
-        pbottoml1 = polyval(pbottoml1, t);
-        ptopl1 = polyval(ptopl1, t);
+        pbottoml1 = polyval(pbottoml1, ind);
+        ptopl1 = polyval(ptopl1, ind);
             
         clf    
-        plot(t, pbottoml1,'b', t, ptopl1,'r');
+        plot(ind, pbottoml1,'b', ind, ptopl1,'r');
         grid on;
         title('l-top = red, l-bottom=blue');
         xlabel('H'); 
